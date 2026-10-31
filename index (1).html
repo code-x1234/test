@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover">
+<meta name="theme-color" content="#203f8d">
+<title>ReadOn · Buy · Sell · Learn</title>
+<style>
+:root{--blue:#203f8d;--ink:#172033;--muted:#7b8492;--line:#e4e8ee;--bg:#f5f7fa;--danger:#c0392b;--ok:#1e8e5a}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:15px;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+input,select,textarea{font-size:16px}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+
+/* header */
+.header{background:#fff;padding:14px 14px 10px;box-shadow:0 2px 8px #15213b12;position:sticky;top:0;z-index:20}
+.wrap{max-width:1000px;margin:0 auto}
+.brand{font-size:26px;font-weight:750;color:var(--blue);margin:0 0 10px}
+.search{display:flex;height:48px;border:1px solid #d9dee6;border-radius:30px;overflow:hidden;background:#fff}
+.search input{border:0;outline:0;min-width:0;flex:1;padding:0 16px;background:transparent}
+.search button{border:0;background:var(--blue);color:#fff;padding:0 18px;font-weight:700;min-height:0}
+.search-info{font-size:13px;color:var(--muted);margin:8px 4px 0;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.search-info button{border:0;background:none;color:var(--blue);font-weight:700;padding:0;min-height:0}
+.tagline{font-size:12px;color:#9aa1aa;margin:8px 4px 0}
+
+/* layout */
+main{max-width:1000px;margin:0 auto;padding:14px 12px calc(110px + env(safe-area-inset-bottom))}
+.page-title{font-size:20px;margin:2px 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.switches{display:flex;gap:8px;margin:0 0 14px}
+.pill{border:1px solid #d7dce5;background:#fff;color:#30394a;border-radius:28px;padding:10px 16px;font-weight:650;min-height:44px}
+.pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:520px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:800px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}}
+
+/* cards */
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0;box-shadow:0 2px 8px #15213b08}
+.book-card{cursor:pointer;position:relative}
+.cover{height:130px;border-radius:8px;background:linear-gradient(145deg,#e8edf7,#d9e1f0);display:flex;align-items:center;justify-content:center;color:#5d6c8c;font-size:38px;overflow:hidden;margin-bottom:10px}
+.cover img{width:100%;height:100%;object-fit:cover}
+.heart{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:0;background:#fffffff2;color:#8a93a3;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px #0002;padding:0;min-height:0}
+.heart.on{color:#e0467c}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px;background:#eef2fb;color:var(--blue);margin-bottom:6px}
+.tag.used{background:#fdf1e4;color:#9a5b12}
+.book-name{font-size:14px;font-weight:700;line-height:1.35;margin:0 0 4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.price{font-weight:750;color:var(--blue);font-size:15px}
+.fee{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.3}
+.book-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:8px;flex-wrap:wrap}
+.book-bottom>div{min-width:0}
+
+/* buttons */
+.btn{border:0;border-radius:22px;background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;display:inline-block;text-align:center;min-height:40px}
+.btn.ghost{background:#fff;color:var(--blue);border:1px solid #cdd6ea}
+.btn.danger{background:var(--danger)}
+.btn.ok{background:var(--ok)}
+.btn.small{padding:8px 12px;font-size:12px;min-height:36px}
+.btn:disabled{opacity:.5}
+.btn.block{width:100%;padding:13px;font-size:15px}
+.x{border:0;background:#f0f3f8;width:40px;height:40px;border-radius:50%;font-size:20px;color:#444;flex-shrink:0;padding:0}
+.floating-plus{position:fixed;right:16px;bottom:calc(92px + env(safe-area-inset-bottom));width:58px;height:58px;border:0;border-radius:50%;background:var(--blue);color:#fff;font-size:32px;line-height:1;box-shadow:0 5px 16px #203f8d55;z-index:15;padding:0}
+
+/* cart */
+.cart-list{display:flex;flex-direction:column;gap:10px}
+.cart-item{background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px;display:grid;grid-template-columns:26px 52px minmax(0,1fr) auto;align-items:center;gap:10px}
+.cart-item input{width:20px;height:20px;accent-color:var(--blue)}
+.mini-cover{height:68px;width:52px;border-radius:6px;background:#e8edf7;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#5d6c8c;font-size:20px}
+.mini-cover img{width:100%;height:100%;object-fit:cover}
+.item-name{font-weight:700;font-size:14px;margin:0 0 3px}
+.item-detail{font-size:12px;color:var(--muted);margin:0}
+.item-price{font-weight:700;color:var(--blue);white-space:nowrap;background:#f0f3fa;border-radius:20px;padding:6px 10px;font-size:13px}
+.remove{border:0;background:none;color:#b03a2e;font-size:12px;font-weight:700;padding:4px 0 0;min-height:0}
+.summary{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px;display:flex;flex-direction:column;gap:12px;position:sticky;bottom:86px;box-shadow:0 -4px 14px #15213b12}
+.summary .btn{width:100%;padding:14px;font-size:15px}
+.total-label{font-size:13px;font-weight:700}
+.total-value{font-size:20px;font-weight:800;color:var(--blue);margin-top:2px}
+
+/* empty */
+.empty{background:#fff;border:1px dashed #cfd6e1;border-radius:14px;text-align:center;padding:30px 15px;color:var(--muted);grid-column:1/-1}
+.empty strong{display:block;color:var(--ink);margin-bottom:6px}
+
+/* bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:auto;min-height:72px;background:#fff;border-top:1px solid #dfe4eb;display:flex;justify-content:space-around;align-items:center;z-index:18;padding:4px 0 calc(4px + env(safe-area-inset-bottom))}
+.nav-item{border:0;background:none;color:#687486;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;max-width:96px;min-height:56px;font-size:11px;font-weight:600;position:relative;padding:0}
+.nav-icon{font-size:20px;line-height:1}
+.nav-item.active{color:var(--blue)}
+.badge{position:absolute;top:2px;left:calc(50% + 8px);background:#e0467c;color:#fff;font-size:10px;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
+
+/* events */
+.event-list{display:flex;flex-direction:column;gap:12px}
+.event-card{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 2px 8px #15213b08}
+.event-img{height:120px;background:linear-gradient(120deg,#203f8d,#6685c5);overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px}
+.event-img img{width:100%;height:100%;object-fit:cover}
+.event-info{padding:12px}
+.event-date{font-size:12px;color:var(--blue);font-weight:700}
+.event-info h3{margin:5px 0;font-size:17px}
+.event-info p{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5}
+
+/* account */
+.profile-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:14px}
+.avatar{width:56px;height:56px;border-radius:50%;background:#e8edf7;color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
+.profile-name{font-size:17px;font-weight:750;margin:0 0 3px}
+.profile-phone{font-size:13px;color:var(--muted);margin:0;word-break:break-all}
+.menu{display:flex;flex-direction:column;gap:10px}
+.menu button{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;color:var(--ink)}
+.menu .mi{width:34px;height:34px;border-radius:10px;background:#f0f3fa;color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.menu strong{font-size:14px}
+.menu small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.menu .chev{margin-left:auto;color:#929baa;font-size:20px}
+.sub-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.sub-head h2{margin:0;font-size:18px}
+.back{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;font-weight:700;color:var(--blue);min-height:36px}
+.list{display:flex;flex-direction:column;gap:10px}
+.row-card{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;flex-wrap:wrap}
+.thumb{width:48px;height:64px;border-radius:6px;background:#e8edf7;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#5d6c8c;font-size:20px}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.grow{flex:1;min-width:0}
+.status{font-size:12px;font-weight:700;border-radius:12px;padding:4px 9px;display:inline-block;white-space:nowrap}
+.status.pending{background:#fff4df;color:#9a5b12}
+.status.confirmed{background:#e4f5ec;color:#1e7a4d}
+.status.completed{background:#eef2fb;color:var(--blue)}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.field label{font-size:13px;font-weight:700;color:#38425a}
+.field input,.field select,.field textarea{border:1px solid #d3d9e3;border-radius:10px;padding:11px 12px;outline:0;background:#fff;width:100%;min-height:44px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.field input:disabled{background:#f3f5f8;color:#888}
+.field textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+.check{display:flex;align-items:center;gap:10px;font-size:13px;color:#38425a;margin:4px 0 14px}
+.check input{accent-color:var(--blue);width:20px;height:20px}
+.hint{font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+.info-line{font-size:14px;margin:8px 0;color:#38425a;word-break:break-word}
+.info-line b{color:var(--ink)}
+.kv{font-size:13px;color:#4a5468;margin:4px 0;word-break:break-word;line-height:1.5}
+.kv b{color:var(--ink)}
+.sec-title{font-size:12px;font-weight:700;margin:12px 0 4px;color:var(--blue);text-transform:uppercase;letter-spacing:.4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.actions .btn{flex:1 1 auto;text-align:center}
+
+/* modal sheet */
+.overlay{position:fixed;inset:0;background:#15213b80;display:flex;align-items:flex-end;justify-content:center;z-index:100}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:90vh;max-height:90dvh;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+@media(min-width:700px){.overlay{align-items:center;padding:20px}.sheet{border-radius:18px}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+.sheet-head h2{margin:0;font-size:18px}
+.detail-cover{height:200px;border-radius:12px;background:#e8edf7;display:flex;align-items:center;justify-content:center;font-size:56px;color:#5d6c8c;overflow:hidden}
+.detail-cover img{width:100%;height:100%;object-fit:cover}
+.breakdown{background:#f7f9fc;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:14px}
+.breakdown div{display:flex;justify-content:space-between;padding:4px 0;gap:10px}
+.breakdown .tot{font-weight:800;color:var(--blue);border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.msg-ok{background:#e4f5ec;color:#1e7a4d;border-radius:12px;padding:14px;font-weight:700;text-align:center;margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#172033;color:#fff;padding:11px 16px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:120;width:calc(100% - 32px);max-width:420px;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.note{font-size:12.5px;color:#5b4a1e;background:#fff8ea;border:1px solid #f1dfb8;border-radius:10px;padding:9px 11px;margin-bottom:12px}
+.admin-access{margin-top:16px}
+.admin-access summary{cursor:pointer;color:var(--muted);font-size:13px;text-align:center;padding:8px}
+
+/* admin dashboard */
+.admin{position:fixed;inset:0;background:#f2f4f8;z-index:90;display:flex;flex-direction:column;overflow:hidden}
+.admin-top{background:var(--blue);color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.admin-top h2{margin:0;font-size:16px}
+.admin-top .x{background:#ffffff26;color:#fff}
+.admin-tabs{display:flex;gap:8px;overflow-x:auto;background:#fff;padding:8px 10px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+.admin-tabs button{border:1px solid #d7dce5;background:#fff;border-radius:20px;padding:8px 13px;font-weight:650;white-space:nowrap;color:#30394a;font-size:13px;min-height:40px}
+.admin-tabs button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.admin-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 12px 100px}
+.admin-inner{max-width:900px;margin:0 auto}
+.admin-fab{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;border:0;background:var(--blue);color:#fff;font-size:30px;box-shadow:0 5px 16px #203f8d55;padding:0}
+.admin-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.admin-card h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.founder{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;gap:10px;flex-wrap:wrap}
+.founder:last-child{border:0}
+.folder summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700;flex-wrap:wrap;min-height:36px}
+.folder summary::-webkit-details-marker{display:none}
+.folder[open] summary{margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="wrap">
+    <h1 class="brand" id="siteName">ReadOn</h1>
+    <form class="search" id="searchForm" autocomplete="off" role="search">
+      <input id="searchInput" type="search" placeholder="Search books..." aria-label="Search books" enterkeyhint="search">
+      <button type="button" id="searchBtn">Search</button>
+    </form>
+    <p class="search-info" id="searchInfo" hidden></p>
+    <p class="tagline" id="siteTagline">ReadOn · Buy · Sell · Learn</p>
+  </div>
+</div>
+
+<main>
+  <section id="page-home">
+    <h2 class="page-title">Discover</h2>
+    <div class="grid" id="homeGrid"></div>
+  </section>
+
+  <section id="page-books" hidden>
+    <h2 class="page-title">Books</h2>
+    <div class="switches">
+      <button class="pill active" data-type="new">New books</button>
+      <button class="pill" data-type="used">Used books</button>
+    </div>
+    <div class="grid" id="booksGrid"></div>
+  </section>
+
+  <section id="page-cart" hidden>
+    <h2 class="page-title">Cart</h2>
+    <div class="cart-list" id="cartList"></div>
+    <div class="summary">
+      <div><div class="total-label">Total (selected books)</div><div class="total-value" id="cartTotal">৳0</div></div>
+      <button class="btn" id="checkoutBtn" data-act="checkout">Checkout</button>
+    </div>
+  </section>
+
+  <section id="page-event" hidden>
+    <h2 class="page-title">Events</h2>
+    <div class="event-list" id="eventList"></div>
+  </section>
+
+  <section id="page-account" hidden>
+    <div id="accountView"></div>
+  </section>
+</main>
+
+<button class="floating-plus" id="uploadFab" data-act="upload-open" aria-label="Sell a book" hidden>+</button>
+
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="nav-item active" data-page="home"><span class="nav-icon">⌂</span><span>Home</span></button>
+  <button class="nav-item" data-page="books"><span class="nav-icon">📖</span><span>Books</span></button>
+  <button class="nav-item" data-page="cart"><span class="nav-icon">🛒</span><span>Cart</span><span class="badge" id="cartBadge" hidden>0</span></button>
+  <button class="nav-item" data-page="event"><span class="nav-icon">◉</span><span>Events</span></button>
+  <button class="nav-item" data-page="account"><span class="nav-icon">○</span><span>Account</span></button>
+</nav>
+
+<div class="overlay" id="overlay" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+
+<div class="admin" id="admin" hidden>
+  <div class="admin-top">
+    <h2>ReadOn Admin Dashboard</h2>
+    <button class="x" data-act="admin-close" aria-label="Close admin">×</button>
+  </div>
+  <div class="admin-tabs" id="adminTabs">
+    <button data-tab="info" class="active">Website Info</button>
+    <button data-tab="books">Admin Books</button>
+    <button data-tab="accounts">Accounts</button>
+    <button data-tab="orders">Orders</button>
+    <button data-tab="events">Events</button>
+  </div>
+  <div class="admin-body"><div class="admin-inner" id="adminBody"></div></div>
+  <button class="admin-fab" id="adminFab" data-act="adm-event-new" aria-label="Create event" hidden>+</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+"use strict";
+
+/* ================= CONFIG ================= */
+var ADMIN_CODE = "admin123";
+var FEE_RATE = 0.10;
+var FOUNDERS = [
+  { name: "Prosenjit Deb", role: "IT Head", share: 25 },
+  { name: "Siddertho Deb", role: "Marketing Head", share: 75 }
+];
+var STATUS_LABEL = { pending: "Pending verification", confirmed: "Confirmed - On the way", completed: "Completed" };
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCnVXS8ZgmUiq1Wt9XzNJsM9qJsR5JYsNM",
+  authDomain: "readon-1.firebaseapp.com",
+  databaseURL: "https://readon-1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "readon-1",
+  storageBucket: "readon-1.firebasestorage.app",
+  messagingSenderId: "192750851736",
+  appId: "1:192750851736:web:40b5341af0bd0b3ed862ed"
+};
+var FB_APP_URL = "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js";
+var FB_DB_URL = "https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js";
+
+/* ================= HELPERS ================= */
+function $(s) { return document.querySelector(s); }
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function money(n) { return "৳" + Math.round(Number(n) || 0).toLocaleString("en-US"); }
+function fee(p) { return Math.round(p * (1 + FEE_RATE)); }
+function normPhone(s) { return String(s || "").replace(/[\s\-()]/g, ""); }
+function validPhone(p) { return /^\+?\d{7,15}$/.test(p); }
+function safeImg(u) { return /^(https?:\/\/|data:image\/)/i.test(u || "") ? u : ""; }
+function safeLink(u) { return /^https?:\/\//i.test(u || "") ? u : ""; }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function fmtDate(ts) {
+  if (!ts) return "—";
+  var d = new Date(ts);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " " +
+         d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+}
+function fmtEventDate(s) {
+  var p = String(s || "").split("-");
+  if (p.length !== 3) return s || "";
+  var d = new Date(+p[0], +p[1] - 1, +p[2]);
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+}
+function shortId(id) { return String(id).slice(-6).toUpperCase(); }
+function uid() { return "k" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function readJSON(key, def) { try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? def : v; } catch (e) { return def; } }
+function fv(form, name) { var el = form.elements.namedItem(name); return el ? String(el.value || "").trim() : ""; }
+function coverHtml(b) {
+  var u = safeImg(b.cover);
+  var icon = esc(b.icon || "📘");
+  if (u) return '<img src="' + esc(u) + '" alt="" loading="lazy" onerror="this.parentNode.textContent=\'' + icon + '\'">';
+  return icon;
+}
+var toastTimer = null;
+function toast(msg) {
+  var t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2600);
+}
+function readFile(file) {
+  return new Promise(function (res, rej) {
+    var r = new FileReader();
+    r.onload = function () { res(r.result); };
+    r.onerror = function () { rej(r.error); };
+    r.readAsDataURL(file);
+  });
+}
+
+/* ================= DATA LAYER =================
+   Uses Firebase Realtime Database when it loads. If Firebase cannot
+   load or stays silent, data is kept in the browser (localStorage). */
+var dbMode = "local";
+var fbDb = null;
+var watchers = [];
+var gotData = false;
+var LOCAL_KEY = "readon_local_v3";
+var local = readJSON(LOCAL_KEY, {}) || {};
+
+function lget(path) {
+  var parts = path.split("/"), o = local;
+  for (var i = 0; i < parts.length; i++) {
+    if (!o || typeof o !== "object") return null;
+    o = o[parts[i]];
+  }
+  return o === undefined ? null : o;
+}
+function emitLocal() {
+  watchers.forEach(function (w) { if (dbMode === "local") w.cb(lget(w.path)); });
+}
+function lset(path, val) {
+  var parts = path.split("/"), o = local;
+  for (var i = 0; i < parts.length - 1; i++) {
+    if (!o[parts[i]] || typeof o[parts[i]] !== "object") o[parts[i]] = {};
+    o = o[parts[i]];
+  }
+  var last = parts[parts.length - 1];
+  if (val === null || val === undefined) delete o[last];
+  else o[last] = JSON.parse(JSON.stringify(val));
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(local)); } catch (e) {}
+  emitLocal();
+}
+function watch(path, cb) {
+  var w = { path: path, cb: cb, ref: null };
+  watchers.push(w);
+  if (dbMode === "firebase") {
+    w.ref = fbDb.ref(path);
+    w.ref.on("value", function (s) { if (path === "books") gotData = true; cb(s.val()); },
+      function (err) { console.warn("Database error:", err); useLocal(); });
+  } else {
+    cb(lget(path));
+  }
+}
+function useLocal() {
+  if (dbMode === "local") return;
+  dbMode = "local";
+  watchers.forEach(function (w) {
+    if (w.ref) { w.ref.off(); w.ref = null; }
+    w.cb(lget(w.path));
+  });
+  renderAll();
+}
+function dbSet(path, val) {
+  if (dbMode === "firebase") return fbDb.ref(path).set(val);
+  lset(path, val);
+  return Promise.resolve();
+}
+function dbUpdate(path, obj) {
+  if (dbMode === "firebase") return fbDb.ref(path).update(obj);
+  Object.keys(obj).forEach(function (k) { lset(path + "/" + k, obj[k]); });
+  return Promise.resolve();
+}
+function dbRemove(path) {
+  if (dbMode === "firebase") return fbDb.ref(path).remove();
+  lset(path, null);
+  return Promise.resolve();
+}
+function dbPush(path, val) {
+  if (dbMode === "firebase") {
+    var key = fbDb.ref(path).push().key;
+    return fbDb.ref(path + "/" + key).set(Object.assign({}, val, { id: key })).then(function () { return key; });
+  }
+  var id = uid();
+  lset(path + "/" + id, Object.assign({}, val, { id: id }));
+  return Promise.resolve(id);
+}
+function dbInc(path) {
+  if (dbMode === "firebase") return fbDb.ref(path).transaction(function (n) { return (n || 0) + 1; });
+  lset(path, (lget(path) || 0) + 1);
+  return Promise.resolve();
+}
+function dbGet(path) {
+  if (dbMode === "firebase") return fbDb.ref(path).once("value").then(function (s) { return s.val(); });
+  return Promise.resolve(lget(path));
+}
+
+function initBackend(done) {
+  var finished = false;
+  function finish(mode) {
+    if (finished) return;
+    finished = true;
+    dbMode = mode;
+    done();
+  }
+  function loadScript(src, ok, bad) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = ok;
+    s.onerror = bad;
+    document.head.appendChild(s);
+  }
+  loadScript(FB_APP_URL, function () {
+    loadScript(FB_DB_URL, function () {
+      try {
+        if (!window.firebase.apps.length) window.firebase.initializeApp(FIREBASE_CONFIG);
+        fbDb = window.firebase.database();
+        finish("firebase");
+      } catch (e) {
+        console.warn(e);
+        finish("local");
+      }
+    }, function () { finish("local"); });
+  }, function () { finish("local"); });
+  setTimeout(function () { finish("local"); }, 6000);
+}
+
+/* ================= STATE ================= */
+var S = {
+  site: { name: "ReadOn", tagline: "ReadOn · Buy · Sell · Learn" },
+  books: {}, users: {}, orders: {}, events: {}, booksLoaded: false
+};
+var ui = {
+  page: "home", bookType: "new", homeOrder: [], accountView: "menu",
+  adminTab: "info", pendingNext: null, openFolders: {}
+};
+var session = localStorage.getItem("readon_phone") || "";
+var cart = readJSON("readon_cart", []);
+var saved = readJSON("readon_saved", []);
+var cartSel = {};
+cart.forEach(function (id) { cartSel[id] = true; });
+
+function allBooks() {
+  return Object.keys(S.books).map(function (id) { return Object.assign({}, S.books[id], { id: id }); });
+}
+function allOrders() {
+  return Object.keys(S.orders).map(function (id) { return Object.assign({}, S.orders[id], { id: id }); });
+}
+function searchQuery() { return $("#searchInput").value.trim().toLowerCase(); }
+function matchesQuery(b, q) {
+  return String(b.title || "").toLowerCase().indexOf(q) !== -1 ||
+         (String(b.category || "") + " books").indexOf(q) !== -1;
+}
+
+/* ================= MODAL / NAV ================= */
+function openModal(html) {
+  $("#sheet").innerHTML = html;
+  $("#sheet").scrollTop = 0;
+  $("#overlay").hidden = false;
+}
+function closeModal() {
+  $("#overlay").hidden = true;
+  $("#sheet").innerHTML = "";
+  ui.pendingNext = null;
+}
+function head(t) {
+  return '<div class="sheet-head"><h2>' + t + '</h2><button class="x" data-act="close-modal" aria-label="Close">×</button></div>';
+}
+function emptyBox(title, msg) {
+  return '<div class="empty"><strong>' + title + '</strong>' + (msg || "") + '</div>';
+}
+function applySite() {
+  $("#siteName").textContent = S.site.name || "ReadOn";
+  $("#siteTagline").textContent = S.site.tagline || "";
+  document.title = (S.site.name || "ReadOn") + " · " + (S.site.tagline || "Buy · Sell · Learn");
+}
+function showPage(p) {
+  ui.page = p;
+  ["home", "books", "cart", "event", "account"].forEach(function (n) {
+    $("#page-" + n).hidden = n !== p;
+  });
+  document.querySelectorAll(".nav-item").forEach(function (b) {
+    b.classList.toggle("active", b.getAttribute("data-page") === p);
+  });
+  $("#uploadFab").hidden = p !== "books";
+  if (p === "home") ui.homeOrder = shuffle(Object.keys(S.books));
+  renderAll();
+  window.scrollTo(0, 0);
+}
+
+/* ================= SEARCH ================= */
+function runSearch() {
+  var raw = $("#searchInput").value.trim();
+  if (raw.toLowerCase() === ADMIN_CODE) {
+    $("#searchInput").value = "";
+    $("#searchInput").blur();
+    renderAll();
+    openAdmin();
+    return;
+  }
+  $("#searchInput").blur();
+  if (raw && ui.page !== "books") showPage("books");
+  renderAll();
+}
+function renderSearchInfo() {
+  var q = searchQuery();
+  var el = $("#searchInfo");
+  if (!q || q === ADMIN_CODE) { el.hidden = true; el.innerHTML = ""; return; }
+  var n = allBooks().filter(function (b) { return matchesQuery(b, q); }).length;
+  el.hidden = false;
+  el.innerHTML = "<span>" + n + " result" + (n === 1 ? "" : "s") + " for “" + esc(q) + "”</span>" +
+                 '<button data-act="search-clear">Clear</button>';
+}
+
+/* ================= BOOKS ================= */
+function bookCard(b) {
+  var inCart = cart.indexOf(b.id) !== -1;
+  var isSaved = saved.indexOf(b.id) !== -1;
+  return '<article class="card book-card" data-open="' + b.id + '">' +
+    '<div class="cover">' + coverHtml(b) + '</div>' +
+    '<button class="heart ' + (isSaved ? "on" : "") + '" data-save="' + b.id + '" aria-label="' + (isSaved ? "Remove from saved" : "Save book") + '">' + (isSaved ? "♥" : "♡") + '</button>' +
+    '<span class="tag ' + (b.category === "used" ? "used" : "") + '">' + (b.category === "used" ? "Used" : "New") + '</span>' +
+    '<p class="book-name">' + esc(b.title) + '</p>' +
+    '<div class="book-bottom"><div><span class="price">' + money(b.price) + '</span><span class="fee">(Includes 10% platform fee)</span></div>' +
+    '<button class="btn small" data-add="' + b.id + '" ' + (inCart ? "disabled" : "") + '>' + (inCart ? "In Cart" : "Add to Cart") + '</button></div>' +
+    '</article>';
+}
+function renderHome() {
+  var q = searchQuery();
+  var list = allBooks().filter(function (b) { return !q || matchesQuery(b, q); });
+  list.sort(function (a, b) {
+    var pa = ui.homeOrder.indexOf(a.id), pb = ui.homeOrder.indexOf(b.id);
+    return (pa < 0 ? 1e9 : pa) - (pb < 0 ? 1e9 : pb);
+  });
+  $("#homeGrid").innerHTML = list.length
+    ? list.map(bookCard).join("")
+    : emptyBox(S.booksLoaded ? (q ? "No books found" : "No books yet") : "Loading books…",
+               q ? "Try another search." : "Books listed for sale will appear here.");
+}
+function renderBooks() {
+  var q = searchQuery();
+  var list = allBooks()
+    .filter(function (b) { return q ? matchesQuery(b, q) : b.category === ui.bookType; })
+    .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+  $("#booksGrid").innerHTML = list.length
+    ? list.map(bookCard).join("")
+    : emptyBox(S.booksLoaded ? "No books found" : "Loading books…", S.booksLoaded ? "Try another search or category." : "");
+}
+function openProduct(id) {
+  var b = S.books[id];
+  if (!b) return;
+  var inCart = cart.indexOf(id) !== -1;
+  openModal(head("Book Details") +
+    '<div class="detail-cover">' + coverHtml(b) + '</div>' +
+    '<span class="tag ' + (b.category === "used" ? "used" : "") + '" style="margin-top:12px">' + (b.category === "used" ? "Used" : "New") + '</span>' +
+    '<h3 style="margin:4px 0;font-size:19px">' + esc(b.title) + '</h3>' +
+    '<div class="breakdown">' +
+      '<div><span>Owner\'s price</span><span>' + money(b.ownerPrice) + '</span></div>' +
+      '<div><span>Platform fee (10%)</span><span>' + money(b.price - b.ownerPrice) + '</span></div>' +
+      '<div class="tot"><span>Total price</span><span>' + money(b.price) + '</span></div>' +
+    '</div>' +
+    '<p class="info-line"><b>Seller address:</b> ' + esc(b.ownerAddress) + '</p>' +
+    '<p class="info-line"><b>Seller contact:</b> ' + (b.allowContact ? esc(b.ownerPhone) : "Not shared by the seller") + '</p>' +
+    '<button class="btn block" data-act="product-add" data-id="' + id + '" style="margin-top:12px" ' + (inCart ? "disabled" : "") + '>' + (inCart ? "Already in Cart" : "Add to Cart") + '</button>');
+}
+function addToCart(id) {
+  var b = S.books[id];
+  if (!b) return toast("This book is no longer available.");
+  if (cart.indexOf(id) !== -1) return toast("This book is already in your cart.");
+  cart.push(id);
+  cartSel[id] = true;
+  saveLS();
+  dbInc("books/" + id + "/cartAdds").catch(function () {});
+  toast("\"" + b.title + "\" added to cart.");
+  renderAll();
+}
+function toggleSave(id) {
+  var i = saved.indexOf(id);
+  if (i === -1) { saved.push(id); toast("Saved to your books."); }
+  else { saved.splice(i, 1); toast("Removed from saved books."); }
+  saveLS();
+  renderAll();
+}
+function saveLS() {
+  try {
+    localStorage.setItem("readon_cart", JSON.stringify(cart));
+    localStorage.setItem("readon_saved", JSON.stringify(saved));
+  } catch (e) {}
+}
+
+/* ================= CART ================= */
+function renderCart() {
+  if (S.booksLoaded) {
+    var before = cart.length;
+    cart = cart.filter(function (id) { return !!S.books[id]; });
+    if (cart.length !== before) saveLS();
+  }
+  var items = cart.map(function (id) { return S.books[id] ? Object.assign({}, S.books[id], { id: id }) : null; }).filter(Boolean);
+  $("#cartList").innerHTML = items.length
+    ? items.map(function (b) {
+        return '<article class="cart-item">' +
+          '<input type="checkbox" data-sel="' + b.id + '" ' + (cartSel[b.id] ? "checked" : "") + ' aria-label="Select ' + esc(b.title) + '">' +
+          '<div class="mini-cover">' + coverHtml(b) + '</div>' +
+          '<div><p class="item-name">' + esc(b.title) + '</p><p class="item-detail">' + (b.category === "used" ? "Used" : "New") + '</p>' +
+          '<button class="remove" data-act="cart-remove" data-id="' + b.id + '">Remove</button></div>' +
+          '<span class="item-price">' + money(b.price) + '</span></article>';
+      }).join("")
+    : emptyBox("Your cart is empty", "Add a book from the Home or Books page.");
+  updateCartTotal();
+}
+function updateCartTotal() {
+  var sel = cart.filter(function (id) { return cartSel[id] && S.books[id]; });
+  var total = sel.reduce(function (s, id) { return s + S.books[id].price; }, 0);
+  $("#cartTotal").textContent = money(total);
+  $("#checkoutBtn").disabled = sel.length === 0;
+}
+function renderBadge() {
+  var n = cart.filter(function (id) { return !S.booksLoaded || S.books[id]; }).length;
+  var b = $("#cartBadge");
+  b.hidden = !n;
+  b.textContent = n;
+}
+
+function checkout() {
+  var ids = cart.filter(function (id) { return cartSel[id] && S.books[id]; });
+  if (!ids.length) { toast("Please select at least one book."); return Promise.resolve(); }
+  if (!session) { openLogin(checkout); return Promise.resolve(); }
+  return dbGet("users/" + session).then(function (user) {
+    user = user || {};
+    if (!user.name || !user.address) { openDeliveryForm(user); return; }
+    var items = ids.map(function (id) {
+      var b = S.books[id];
+      return { bookId: id, title: b.title, category: b.category, price: b.price,
+               ownerName: b.ownerName || "", ownerPhone: b.ownerPhone, ownerAddress: b.ownerAddress };
+    });
+    var total = items.reduce(function (s, i) { return s + i.price; }, 0);
+    return dbPush("orders", {
+      status: "pending", createdAt: Date.now(), buyerPhone: session,
+      buyerName: user.name, buyerAddress: user.address, total: total, items: items
+    }).then(function () {
+      cart = cart.filter(function (id) { return ids.indexOf(id) === -1; });
+      ids.forEach(function (id) { delete cartSel[id]; });
+      saveLS();
+      openModal(head("Order Placed") +
+        '<div class="msg-ok">Your order has been submitted! Please wait for admin verification.</div>' +
+        '<p class="hint">Track its status anytime under Account → My Orders.</p>' +
+        '<button class="btn block" data-act="close-modal">OK</button>');
+      renderAll();
+    });
+  });
+}
+
+/* ================= AUTH / FORMS ================= */
+function openLogin(next) {
+  ui.pendingNext = next || null;
+  openModal(head("Sign In") +
+    '<p class="hint">Enter your mobile number. New numbers create an account automatically.</p>' +
+    '<form data-form="login"><div class="field"><label>Mobile number</label>' +
+    '<input name="phone" type="tel" inputmode="tel" required placeholder="01XXXXXXXXX"></div>' +
+    '<button class="btn block" type="submit">Continue</button></form>');
+}
+function openDeliveryForm(user) {
+  openModal(head("Delivery Details") +
+    '<p class="hint">Please add your name and delivery address to place the order.</p>' +
+    '<form data-form="delivery">' +
+    '<div class="field"><label>Full name</label><input name="name" required value="' + esc(user.name || "") + '"></div>' +
+    '<div class="field"><label>Delivery address</label><textarea name="address" required>' + esc(user.address || "") + '</textarea></div>' +
+    '<button class="btn block" type="submit">Save &amp; Place Order</button></form>');
+}
+function openUpload() {
+  openModal(head("Sell a Book") +
+    '<form data-form="upload">' +
+    '<div class="field"><label>Book cover (upload image, max 400 KB)</label><input name="coverFile" type="file" accept="image/*"></div>' +
+    '<div class="field"><label>…or cover image URL</label><input name="coverUrl" type="url" placeholder="https://…"></div>' +
+    '<div class="field"><label>Book name</label><input name="title" required maxlength="120"></div>' +
+    '<div class="field"><label>Category</label><select name="category" required><option value="new">New</option><option value="used">Used</option></select></div>' +
+    '<div class="row2">' +
+      '<div class="field"><label>Owner\'s name</label><input name="ownerName" maxlength="80"></div>' +
+      '<div class="field"><label>Owner\'s mobile number</label><input name="ownerPhone" type="tel" inputmode="tel" required></div>' +
+    '</div>' +
+    '<div class="field"><label>Owner\'s address</label><textarea name="ownerAddress" required></textarea></div>' +
+    '<div class="field"><label>Owner\'s price (৳)</label><input name="ownerPrice" type="number" inputmode="numeric" min="1" step="1" required></div>' +
+    '<p class="hint" id="feePreview">A 10% platform fee is added to the owner\'s price.</p>' +
+    '<label class="check"><input type="checkbox" name="allowContact" checked> Allow buyers to see my contact number</label>' +
+    '<button class="btn block" type="submit">List Book</button></form>');
+}
+
+/* ================= ACCOUNT ================= */
+function renderAccount() {
+  var v = $("#accountView");
+  var typing = document.activeElement && v.contains(document.activeElement) &&
+               /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if (typing) return;
+
+  var adminBox = '<details class="admin-access"><summary>Admin access</summary>' +
+    '<form data-form="admin-code" style="margin-top:10px">' +
+    '<div class="field"><label>Access code</label><input name="code" type="password" required placeholder="Enter access code"></div>' +
+    '<button class="btn ghost block" type="submit">Open Admin Dashboard</button></form></details>';
+
+  if (!session) {
+    v.innerHTML = '<h2 class="page-title">My Account</h2>' +
+      '<div class="profile-card"><div class="avatar">?</div><div><p class="profile-name">Welcome to ReadOn</p><p class="profile-phone">Sign in with your mobile number</p></div></div>' +
+      '<div class="card"><p class="hint">Enter your mobile number. New numbers create an account automatically.</p>' +
+      '<form data-form="login"><div class="field"><label>Mobile number</label><input name="phone" type="tel" inputmode="tel" required placeholder="01XXXXXXXXX"></div>' +
+      '<button class="btn block" type="submit">Continue</button></form></div>' + adminBox;
+    return;
+  }
+
+  var u = S.users[session] || {};
+  var profile = '<div class="profile-card"><div class="avatar">' + esc((u.name || "?").trim().charAt(0).toUpperCase() || "?") + '</div>' +
+    '<div><p class="profile-name">' + esc(u.name || "Add your name") + '</p><p class="profile-phone">' + esc(session) + '</p></div></div>';
+
+  if (ui.accountView === "menu") {
+    var items = [
+      ["profile", "♙", "My Profile", "Manage your name and details"],
+      ["orders", "▤", "My Orders", "Track your purchases and status"],
+      ["mybooks", "📚", "My Books", "Books you have listed for sale"],
+      ["saved", "♡", "Saved Books", "Books you have saved"],
+      ["address", "⌖", "Delivery Address", "Manage your delivery details"],
+      ["settings", "⚙", "Settings", "Account and support"]
+    ];
+    v.innerHTML = '<h2 class="page-title">My Account</h2>' + profile +
+      '<div class="menu">' + items.map(function (it) {
+        return '<button data-act="acc-view" data-view="' + it[0] + '"><span class="mi">' + it[1] + '</span>' +
+               '<span><strong>' + it[2] + '</strong><small>' + it[3] + '</small></span><span class="chev">›</span></button>';
+      }).join("") + '</div>' + adminBox;
+    return;
+  }
+  var titles = { profile: "My Profile", address: "Delivery Address", orders: "My Orders", mybooks: "My Books", saved: "Saved Books", settings: "Settings" };
+  v.innerHTML = profile +
+    '<div class="sub-head"><button class="back" data-act="acc-back">← Back</button><h2>' + (titles[ui.accountView] || "") + '</h2></div>' +
+    accountBody(u);
+}
+function accountBody(u) {
+  var view = ui.accountView;
+  if (view === "profile" || view === "address") {
+    return '<div class="card"><form data-form="profile">' +
+      '<div class="field"><label>Full name</label><input name="name" required value="' + esc(u.name || "") + '"></div>' +
+      '<div class="field"><label>Mobile number</label><input value="' + esc(session) + '" disabled></div>' +
+      '<div class="field"><label>Delivery address</label><textarea name="address" required>' + esc(u.address || "") + '</textarea></div>' +
+      '<button class="btn" type="submit">Save Changes</button></form></div>';
+  }
+  if (view === "orders") {
+    var mine = allOrders().filter(function (o) { return o.buyerPhone === session; })
+      .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    if (!mine.length) return emptyBox("No orders yet", "Your purchases will appear here.");
+    return '<div class="list">' + mine.map(function (o) {
+      var items = Object.keys(o.items || {}).map(function (k) { return o.items[k]; });
+      return '<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap">' +
+        '<b>Order #' + shortId(o.id) + '</b><span class="status ' + o.status + '">' + (STATUS_LABEL[o.status] || o.status) + '</span></div>' +
+        '<p class="info-line">' + items.map(function (i) { return esc(i.title); }).join(", ") + '</p>' +
+        '<p class="kv" style="margin:0"><b>Total:</b> ' + money(o.total) + ' · ' + fmtDate(o.createdAt) + '</p></div>';
+    }).join("") + '</div>';
+  }
+  if (view === "mybooks") {
+    var mb = allBooks().filter(function (b) { return b.ownerPhone === session; })
+      .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    return '<div style="margin-bottom:12px"><button class="btn" data-act="upload-open">+ Sell a Book</button></div>' +
+      (mb.length ? '<div class="list">' + mb.map(function (b) {
+        return '<div class="row-card"><div class="thumb">' + coverHtml(b) + '</div><div class="grow">' +
+          '<p style="margin:0 0 4px;font-weight:700">' + esc(b.title) + '</p>' +
+          '<div class="kv">' + (b.category === "used" ? "Used" : "New") + ' · ' + money(b.price) + '</div>' +
+          '<div class="kv">Cart adds: ' + (b.cartAdds || 0) + '</div></div></div>';
+      }).join("") + '</div>' : emptyBox("No listed books", "Books you list for sale will appear here."));
+  }
+  if (view === "saved") {
+    var list = saved.map(function (id) { return S.books[id] ? Object.assign({}, S.books[id], { id: id }) : null; }).filter(Boolean);
+    if (!list.length) return emptyBox("No saved books", "Tap the heart on any book to save it.");
+    return '<div class="list">' + list.map(function (b) {
+      return '<div class="row-card"><div class="thumb">' + coverHtml(b) + '</div><div class="grow">' +
+        '<p style="margin:0 0 4px;font-weight:700">' + esc(b.title) + '</p><div class="kv">' + money(b.price) + '</div>' +
+        '<div class="actions"><button class="btn small ghost" data-open="' + b.id + '">View</button>' +
+        '<button class="btn small danger" data-save="' + b.id + '">Remove</button></div></div></div>';
+    }).join("") + '</div>';
+  }
+  return '<div class="card"><p class="info-line"><b>Signed in as:</b> ' + esc(session) + '</p>' +
+    '<p class="hint" style="margin:6px 0 14px">Need help? Please contact the ReadOn team.</p>' +
+    '<button class="btn danger" data-act="signout">Sign Out</button></div>';
+}
+
+/* ================= EVENTS ================= */
+function renderEvents() {
+  var list = Object.keys(S.events).map(function (id) { return Object.assign({}, S.events[id], { id: id }); })
+    .sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+  $("#eventList").innerHTML = list.length
+    ? list.map(function (e) {
+        return '<article class="event-card"><div class="event-img">' +
+          (safeImg(e.image) ? '<img src="' + esc(safeImg(e.image)) + '" alt="" loading="lazy" onerror="this.remove()">' : "◉") +
+          '</div><div class="event-info"><div class="event-date">' + esc(fmtEventDate(e.date)) + '</div>' +
+          '<h3>' + esc(e.title) + '</h3><p>' + esc(e.description) + '</p>' +
+          (safeLink(e.link) ? '<button class="btn small" data-act="event-open" data-id="' + e.id + '">Learn more</button>' : "") +
+          '</div></article>';
+      }).join("")
+    : emptyBox("No events yet", "Check back soon for reading events, webinars and book fairs.");
+}
+
+/* ================= ADMIN ================= */
+function openAdmin() {
+  $("#admin").hidden = false;
+  renderAdmin(true);
+}
+function closeAdmin() { $("#admin").hidden = true; }
+function renderAdmin(force) {
+  if ($("#admin").hidden) return;
+  document.querySelectorAll("#adminTabs [data-tab]").forEach(function (b) {
+    b.classList.toggle("active", b.getAttribute("data-tab") === ui.adminTab);
+  });
+  $("#adminFab").hidden = ui.adminTab !== "events";
+  var body = $("#adminBody");
+  var typing = document.activeElement && body.contains(document.activeElement) &&
+               /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if (!force && typing) return;
+  var views = { info: adminInfo, books: adminBooks, accounts: adminAccounts, orders: adminOrders, events: adminEvents };
+  body.innerHTML = views[ui.adminTab]();
+}
+function adminInfo() {
+  return '<div class="admin-card"><h4>Website Info</h4>' +
+    '<form data-form="adm-info">' +
+    '<div class="field"><label>Website name</label><input name="name" required value="' + esc(S.site.name) + '"></div>' +
+    '<div class="field"><label>Tagline</label><input name="tagline" value="' + esc(S.site.tagline) + '"></div>' +
+    '<button class="btn" type="submit">Save Changes</button></form></div>' +
+    '<div class="admin-card"><h4>Founders &amp; Capital Share</h4>' +
+    FOUNDERS.map(function (f) {
+      return '<div class="founder"><span><b>' + esc(f.name) + '</b> — ' + esc(f.role) + '</span><span style="color:var(--blue);font-weight:700">' + f.share + '% Capital Share</span></div>';
+    }).join("") + '</div>';
+}
+function adminBooks() {
+  var list = allBooks().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+  if (!list.length) return emptyBox("No books uploaded yet", "Books uploaded by users will appear here.");
+  return list.map(function (b) {
+    return '<div class="admin-card"><div style="display:flex;gap:12px;flex-wrap:wrap">' +
+      '<div class="thumb" style="width:60px;height:80px">' + coverHtml(b) + '</div>' +
+      '<div class="grow"><h4>' + esc(b.title) + ' <span class="tag ' + (b.category === "used" ? "used" : "") + '">' + (b.category === "used" ? "Used" : "New") + '</span></h4>' +
+      '<div class="kv"><b>Uploader phone:</b> ' + esc(b.ownerPhone) + '</div>' +
+      '<div class="kv"><b>Uploader address:</b> ' + esc(b.ownerAddress) + '</div>' +
+      '<div class="kv"><b>Price:</b> ' + money(b.price) + ' (owner: ' + money(b.ownerPrice) + ')</div>' +
+      '<div class="kv"><b>Total cart adds:</b> ' + (b.cartAdds || 0) + '</div>' +
+      '<div class="actions"><button class="btn danger small" data-act="adm-del-book" data-id="' + b.id + '">Delete Book</button></div>' +
+      '</div></div></div>';
+  }).join("");
+}
+function adminAccounts() {
+  var list = Object.keys(S.users).map(function (phone) { return Object.assign({}, S.users[phone], { phone: phone }); });
+  if (!list.length) return emptyBox("No registered accounts yet");
+  return list.map(function (u) {
+    return '<div class="admin-card"><h4>' + esc(u.name || "(no name yet)") + '</h4>' +
+      '<div class="kv"><b>Phone:</b> ' + esc(u.phone) + '</div>' +
+      '<div class="kv"><b>Address:</b> ' + esc(u.address || "—") + '</div>' +
+      '<div class="actions"><button class="btn danger small" data-act="adm-del-user" data-id="' + esc(u.phone) + '">Delete Account</button></div></div>';
+  }).join("");
+}
+function adminOrders() {
+  var list = allOrders().sort(function (a, b) {
+    var pa = a.status === "pending" ? 0 : 1, pb = b.status === "pending" ? 0 : 1;
+    return pa - pb || (b.createdAt || 0) - (a.createdAt || 0);
+  });
+  if (!list.length) return emptyBox("No orders yet");
+  return list.map(function (o) {
+    var items = Object.keys(o.items || {}).map(function (k) { return o.items[k]; });
+    return '<details class="admin-card folder" data-oid="' + o.id + '" ' + (ui.openFolders[o.id] ? "open" : "") + '>' +
+      '<summary><span>Order #' + shortId(o.id) + '</span><span class="status ' + o.status + '">' + (STATUS_LABEL[o.status] || o.status) + '</span></summary>' +
+      '<div class="kv"><b>Placed:</b> ' + fmtDate(o.createdAt) + ' · <b>Total:</b> ' + money(o.total) + '</div>' +
+      '<div class="sec-title">Requested books</div>' +
+      items.map(function (it) {
+        return '<div class="kv" style="margin-bottom:8px">• <b>' + esc(it.title) + '</b> — ' + money(it.price) + '<br>' +
+          'Owner: ' + esc(it.ownerName || "—") + ' · ' + esc(it.ownerPhone) + '<br>' +
+          'Owner address: ' + esc(it.ownerAddress) + '</div>';
+      }).join("") +
+      '<div class="sec-title">Buyer</div>' +
+      '<div class="kv"><b>Name:</b> ' + esc(o.buyerName) + ' · <b>Phone:</b> ' + esc(o.buyerPhone) + '</div>' +
+      '<div class="kv"><b>Address:</b> ' + esc(o.buyerAddress) + '</div>' +
+      '<div class="actions">' +
+        (o.status === "pending" ? '<button class="btn ok small" data-act="adm-confirm" data-id="' + o.id + '">Verify &amp; Confirm Order</button>' : "") +
+        (o.status === "confirmed" ? '<button class="btn small" data-act="adm-complete" data-id="' + o.id + '">Mark as Completed</button>' : "") +
+      '</div></details>';
+  }).join("");
+}
+function adminEvents() {
+  var list = Object.keys(S.events).map(function (id) { return Object.assign({}, S.events[id], { id: id }); })
+    .sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+  if (!list.length) return emptyBox("No events yet", "Tap + to create one.");
+  return list.map(function (e) {
+    return '<div class="admin-card"><div style="display:flex;gap:12px;flex-wrap:wrap">' +
+      '<div class="thumb" style="width:72px;height:56px">' + (safeImg(e.image) ? '<img src="' + esc(safeImg(e.image)) + '" alt="">' : "◉") + '</div>' +
+      '<div class="grow"><h4>' + esc(e.title) + '</h4>' +
+      '<div class="kv"><b>Date:</b> ' + esc(fmtEventDate(e.date)) + '</div>' +
+      '<div class="kv">' + esc(e.description) + '</div>' +
+      '<div class="kv"><b>Action link:</b> ' + esc(e.link) + '</div>' +
+      '<div class="actions"><button class="btn danger small" data-act="adm-del-event" data-id="' + e.id + '">Delete Event</button></div>' +
+      '</div></div></div>';
+  }).join("");
+}
+function openEventForm() {
+  openModal(head("New Event") +
+    '<form data-form="adm-event">' +
+    '<div class="field"><label>Event image URL</label><input name="image" type="url" placeholder="https://…"></div>' +
+    '<div class="field"><label>Event title</label><input name="title" required maxlength="120"></div>' +
+    '<div class="field"><label>Event date</label><input name="date" type="date" required></div>' +
+    '<div class="field"><label>Description</label><textarea name="description"></textarea></div>' +
+    '<div class="field"><label>Action link (opens when event is clicked)</label><input name="link" type="url" required placeholder="https://…"></div>' +
+    '<button class="btn block" type="submit">Create Event</button></form>');
+}
+
+/* ================= FORM HANDLERS ================= */
+var forms = {
+  login: function (f) {
+    var phone = normPhone(fv(f, "phone"));
+    if (!validPhone(phone)) { toast("Please enter a valid mobile number."); return Promise.resolve(); }
+    return dbGet("users/" + phone).then(function (u) {
+      if (!u) return dbSet("users/" + phone, { phone: phone, name: "", address: "", createdAt: Date.now() });
+    }).then(function () {
+      session = phone;
+      localStorage.setItem("readon_phone", phone);
+      ui.accountView = "menu";
+      var next = ui.pendingNext;
+      ui.pendingNext = null;
+      closeModal();
+      toast("Signed in successfully.");
+      renderAll();
+      if (next) return next();
+    });
+  },
+  "admin-code": function (f) {
+    if (fv(f, "code") === ADMIN_CODE) { f.reset(); closeModal(); openAdmin(); }
+    else toast("Incorrect access code.");
+    return Promise.resolve();
+  },
+  delivery: function (f) {
+    var name = fv(f, "name"), address = fv(f, "address");
+    if (!name || !address) { toast("Please enter your name and address."); return Promise.resolve(); }
+    return dbUpdate("users/" + session, { name: name, address: address }).then(function () {
+      closeModal();
+      return checkout();
+    });
+  },
+  profile: function (f) {
+    var name = fv(f, "name"), address = fv(f, "address");
+    if (!name || !address) { toast("Please enter your name and address."); return Promise.resolve(); }
+    return dbUpdate("users/" + session, { name: name, address: address }).then(function () {
+      toast("Profile saved.");
+    });
+  },
+  upload: function (f) {
+    var title = fv(f, "title");
+    var category = fv(f, "category") === "used" ? "used" : "new";
+    var ownerName = fv(f, "ownerName");
+    var ownerPhone = normPhone(fv(f, "ownerPhone"));
+    var ownerAddress = fv(f, "ownerAddress");
+    var ownerPrice = Math.round(Number(fv(f, "ownerPrice")));
+    if (!title) { toast("Please enter the book name."); return Promise.resolve(); }
+    if (!validPhone(ownerPhone)) { toast("Please enter a valid owner mobile number."); return Promise.resolve(); }
+    if (!ownerAddress) { toast("Please enter the owner's address."); return Promise.resolve(); }
+    if (!(ownerPrice > 0)) { toast("Please enter a valid owner price."); return Promise.resolve(); }
+    var coverUrl = safeImg(fv(f, "coverUrl"));
+    var fileEl = f.elements.namedItem("coverFile");
+    var file = fileEl && fileEl.files ? fileEl.files[0] : null;
+    var coverPromise = Promise.resolve(coverUrl);
+    if (file) {
+      if (file.type.indexOf("image/") !== 0) { toast("Please choose an image file."); return Promise.resolve(); }
+      if (file.size > 400 * 1024) { toast("Image must be under 400 KB. Use an image URL instead."); return Promise.resolve(); }
+      coverPromise = readFile(file);
+    }
+    var allowContact = f.elements.namedItem("allowContact").checked;
+    return coverPromise.then(function (cover) {
+      return dbPush("books", {
+        title: title, category: category, ownerName: ownerName, ownerPhone: ownerPhone,
+        ownerAddress: ownerAddress, ownerPrice: ownerPrice, price: fee(ownerPrice),
+        cover: cover || "", icon: "📘", allowContact: allowContact, cartAdds: 0, createdAt: Date.now()
+      });
+    }).then(function () {
+      closeModal();
+      toast("Your book has been listed.");
+      showPage("books");
+    });
+  },
+  "adm-info": function (f) {
+    var name = fv(f, "name"), tagline = fv(f, "tagline");
+    if (!name) { toast("Website name is required."); return Promise.resolve(); }
+    return dbSet("site", { name: name, tagline: tagline }).then(function () { toast("Website info saved."); });
+  },
+  "adm-event": function (f) {
+    var ev = {
+      image: safeImg(fv(f, "image")), title: fv(f, "title"), date: fv(f, "date"),
+      description: fv(f, "description"), link: safeLink(fv(f, "link")), createdAt: Date.now()
+    };
+    if (!ev.title || !ev.date) { toast("Title and date are required."); return Promise.resolve(); }
+    if (!ev.link) { toast("Please enter a valid action link (https://…)."); return Promise.resolve(); }
+    return dbPush("events", ev).then(function () { closeModal(); toast("Event created."); });
+  }
+};
+
+/* ================= ACTIONS ================= */
+function runAct(a, d) {
+  var p;
+  switch (a) {
+    case "close-modal": closeModal(); return;
+    case "product-add": addToCart(d.id); closeModal(); return;
+    case "cart-remove":
+      cart = cart.filter(function (x) { return x !== d.id; });
+      delete cartSel[d.id];
+      saveLS(); renderAll(); return;
+    case "checkout": p = checkout(); break;
+    case "upload-open": openUpload(); return;
+    case "event-open":
+      var e = S.events[d.id];
+      if (e && safeLink(e.link)) window.open(e.link, "_blank", "noopener");
+      return;
+    case "acc-view": ui.accountView = d.view; renderAccount(); return;
+    case "acc-back": ui.accountView = "menu"; renderAccount(); return;
+    case "signout":
+      session = ""; ui.accountView = "menu";
+      localStorage.removeItem("readon_phone");
+      toast("You have signed out.");
+      renderAll(); return;
+    case "search-clear": $("#searchInput").value = ""; renderAll(); return;
+    case "admin-close": closeAdmin(); return;
+    case "adm-del-book":
+      if (confirm("Delete this book permanently?")) p = dbRemove("books/" + d.id).then(function () { toast("Book deleted."); });
+      break;
+    case "adm-del-user":
+      if (confirm("Delete the account " + d.id + "?")) p = dbRemove("users/" + d.id).then(function () { toast("Account deleted."); });
+      break;
+    case "adm-del-event":
+      if (confirm("Delete this event?")) p = dbRemove("events/" + d.id).then(function () { toast("Event deleted."); });
+      break;
+    case "adm-confirm":
+      p = dbUpdate("orders/" + d.id, { status: "confirmed", confirmedAt: Date.now() }).then(function () { toast("Order verified and confirmed."); });
+      break;
+    case "adm-complete":
+      p = dbUpdate("orders/" + d.id, { status: "completed", completedAt: Date.now() }).then(function () { toast("Order marked as completed."); });
+      break;
+    case "adm-event-new": openEventForm(); return;
+    default: return;
+  }
+  if (p) p.catch(onError);
+}
+function onError(err) {
+  console.error(err);
+  toast("Something went wrong. Please try again.");
+}
+
+/* ================= RENDER ================= */
+function renderAll() {
+  renderHome();
+  renderBooks();
+  renderCart();
+  renderEvents();
+  renderAccount();
+  renderBadge();
+  renderSearchInfo();
+  renderAdmin(false);
+}
+
+/* ================= EVENT WIRING ================= */
+function closest(el, sel) {
+  while (el && el.nodeType === 1) {
+    if (el.matches(sel)) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (t.id === "overlay") { closeModal(); return; }
+  var nav = closest(t, ".nav-item");
+  if (nav) { showPage(nav.getAttribute("data-page")); return; }
+  var pill = closest(t, ".pill[data-type]");
+  if (pill) {
+    ui.bookType = pill.getAttribute("data-type");
+    document.querySelectorAll(".pill").forEach(function (p) { p.classList.toggle("active", p === pill); });
+    renderBooks();
+    return;
+  }
+  var tab = closest(t, "#adminTabs [data-tab]");
+  if (tab) { ui.adminTab = tab.getAttribute("data-tab"); renderAdmin(true); return; }
+  var sv = closest(t, "[data-save]");
+  if (sv) { toggleSave(sv.getAttribute("data-save")); return; }
+  var ad = closest(t, "[data-add]");
+  if (ad && !ad.disabled) { addToCart(ad.getAttribute("data-add")); return; }
+  var op = closest(t, "[data-open]");
+  if (op) { openProduct(op.getAttribute("data-open")); return; }
+  var act = closest(t, "[data-act]");
+  if (act) { runAct(act.getAttribute("data-act"), act.dataset); }
+});
+
+document.addEventListener("change", function (e) {
+  var id = e.target.getAttribute && e.target.getAttribute("data-sel");
+  if (id !== null && id !== undefined) {
+    if (e.target.checked) cartSel[id] = true; else delete cartSel[id];
+    updateCartTotal();
+  }
+});
+
+document.addEventListener("input", function (e) {
+  if (e.target.name === "ownerPrice") {
+    var p = Number(e.target.value);
+    var el = document.getElementById("feePreview");
+    if (el) el.textContent = p > 0
+      ? "Buyers will see " + money(fee(p)) + " (includes 10% platform fee)"
+      : "A 10% platform fee is added to the owner's price.";
+  }
+});
+
+document.addEventListener("submit", function (e) {
+  var f = e.target;
+  var kind = f.getAttribute("data-form");
+  if (!kind) return;
+  e.preventDefault();
+  if (!forms[kind]) return;
+  try {
+    Promise.resolve(forms[kind](f)).catch(onError);
+  } catch (err) { onError(err); }
+});
+
+document.addEventListener("toggle", function (e) {
+  var d = e.target;
+  if (d.tagName === "DETAILS" && d.getAttribute("data-oid")) {
+    var id = d.getAttribute("data-oid");
+    if (d.open) ui.openFolders[id] = true; else delete ui.openFolders[id];
+  }
+}, true);
+
+document.addEventListener("keydown", function (e) {
+  if (e.ctrlKey && e.shiftKey && (e.key === "A" || e.key === "a")) {
+    e.preventDefault();
+    var code = window.prompt("Enter access code");
+    if (code === ADMIN_CODE) openAdmin();
+  }
+});
+
+// Search: Enter key (form submit) and the Search button both run the same action
+$("#searchForm").addEventListener("submit", function (e) { e.preventDefault(); runSearch(); });
+$("#searchBtn").addEventListener("click", function (e) { e.preventDefault(); runSearch(); });
+$("#searchInput").addEventListener("keydown", function (e) {
+  if (e.key === "Enter" || e.keyCode === 13) {
+    e.preventDefault();
+    runSearch();
+  }
+});
+$("#searchInput").addEventListener("input", function () {
+  renderHome();
+  renderBooks();
+  renderSearchInfo();
+});
+
+/* ================= BOOT ================= */
+function startWatches() {
+  watch("site", function (v) {
+    S.site = Object.assign({ name: "ReadOn", tagline: "ReadOn · Buy · Sell · Learn" }, v || {});
+    applySite();
+    renderAdmin(false);
+  });
+  watch("books", function (v) {
+    S.books = v || {};
+    S.booksLoaded = true;
+    if (!ui.homeOrder.length) ui.homeOrder = shuffle(Object.keys(S.books));
+    renderAll();
+  });
+  watch("events", function (v) { S.events = v || {}; renderAll(); });
+  watch("users", function (v) { S.users = v || {}; renderAll(); });
+  watch("orders", function (v) { S.orders = v || {}; renderAll(); });
+}
+
+applySite();
+showPage("home");
+var params = new URLSearchParams(window.location.search);
+if (params.get("admin") === ADMIN_CODE || window.location.hash.slice(1) === ADMIN_CODE) openAdmin();
+
+initBackend(function () {
+  startWatches();
+  if (dbMode === "firebase") {
+    setTimeout(function () { if (!gotData) useLocal(); }, 8000);
+  }
+});
+
+})();
+</script>
+</body>
+</html>
